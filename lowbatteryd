@@ -1,0 +1,46 @@
+#!/bin/bash
+
+STOPFILE="/tmp/stoplowbatteryd"
+LOW="Fucking power"
+VERYLOW="NOW!!"
+
+function check {
+    DELAY=$1
+    if [ -z $DELAY ]; then
+	DELAY=60
+    fi
+    
+    while :
+    do
+	if [ -a "$STOPFILE" ]; then
+	    break
+	fi
+	
+	BATTERY=`battery -c`
+	if [ $BATTERY -lt 3 ]; then
+	    notify-send "$VERYLOW"
+	elif [ $BATTERY -lt 10 ]; then
+	    notify-send "$LOW"
+	fi
+	
+	sleep $DELAY
+    done
+
+    rm "$STOPFILE"
+    echo "Stopped lowbatteryd"
+}
+
+if [ "$1" == "-h" ]; then
+    echo "$0 [n]"
+    echo "   Will check the battery percentage every n (60 if not given) seconds. If it is below 10 it will show a message, if below 3 a different message."
+    echo "$0 stop"
+    echo "   Will create a file in /tmp that will cause the daemon to stop next time it goes to check the percentage."
+    echo "$0 -h"
+    echo "   Will give you this."
+elif [ "$1" == "stop" ]; then
+    echo "Stopping lowbatteryd"
+    touch "$STOPFILE"
+else
+    echo "Starting lowbatteryd"
+    check "$1" &
+fi

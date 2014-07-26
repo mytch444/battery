@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ "$1" == "-h" ]; then
+    echo "$0"
+    echo "   Will print out the percentage and status."
+    echo "$0 -c"
+    echo "   Will just print out the percentage with no fansy stuff. Thus it is clean."
+    echo "$0 -h"
+    echo "   Will give you this."
+    exit 0
+fi
+
+cd `find /sys/devices/ -name BAT0` # hopefully there is only one
+PERCENT=$((100 * `cat energy_now` / `cat energy_full`))
+STATUS=`cat status`
+
+if [ "$1" == "-c" ]; then
+    echo "$PERCENT"
+else
+    echo "$PERCENT% [$STATUS]"
+fi
