@@ -4,9 +4,6 @@ Prints out the status of your battery. Percentage and its state.
 
 lowbatteryd
 ===========
-Simple daemon that check the percentage of your battery, if it's below ten it tells you to get to power through notify-send, if it's below three it tells you to do so imediatly.
+Simple daemon that check the percentage of your battery and gives you warnings through notify-send.
 
-There is also an open-rc (gentoo!) init service.
-
-This is dependand on battery and notify-send.
-
+It is probably best to add this to your .xinitrc file and not as a init script like I was trying to for a while there.
