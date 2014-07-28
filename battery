@@ -5,6 +5,8 @@ if [ "$1" == "-h" ]; then
     echo "   Will print out the percentage and status."
     echo "$0 -c"
     echo "   Will just print out the percentage with no fansy stuff. Thus it is clean."
+    echo "$0 -s"
+    echo "   Will just print out the state."
     echo "$0 -h"
     echo "   Will give you this."
     exit 0
@@ -16,6 +18,8 @@ STATUS=`cat status`
 
 if [ "$1" == "-c" ]; then
     echo "$PERCENT"
+elif [ "$1" == "-s" ];then
+    echo "$STATUS"
 else
     echo "$PERCENT% [$STATUS]"
 fi

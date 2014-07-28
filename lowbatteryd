@@ -26,6 +26,11 @@ function check {
 	if [ "$MESSAGE" == "STOP" ]; then
 	    break
 	fi
+
+	STATE=`battery -s`
+	if [ "$STATE" == "Charging" ]; then
+	    MESSAGE="CHARGING"
+	fi
 	
 	BATTERY=`battery -c`
 	if [ $BATTERY -lt $VERYLOW ] && [ -z "$MESSAGE" ]; then
