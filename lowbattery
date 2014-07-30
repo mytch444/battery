@@ -51,14 +51,8 @@ function check {
 if [ "$1" == "-h" ]; then
     echo "$0 [n]"
     echo "   Will check the battery percentage every n (20 if not given) seconds. If it is below 10 it will show a message, if below 3 a different message."
-    echo "$0 stop"
-    echo "   Will create a file in /tmp that will cause the daemon to stop next time it goes to check the percentage."
     echo "$0 -h"
     echo "   Will give you this."
-elif [ "$1" == "stop" ]; then
-    echo "Stopping lowbatteryd"
-    echo "STOP" > "$MESSAGEFILE"
 else
-    echo "Starting lowbatteryd"
-    check "$1" &
+    check "$1"
 fi

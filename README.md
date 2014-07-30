@@ -2,8 +2,11 @@ battery
 =======
 Prints out the status of your battery. Percentage and its state.
 
-lowbatteryd
+lowbattery
 ===========
-Simple daemon that check the percentage of your battery and gives you warnings through notify-send.
+Simple program that checks the percentage of your battery and gives you warnings through notify-send.
+Add this to your .xinitrc as 
 
-It is probably best to add this to your .xinitrc file and not as a init script like I was trying to for a while there.
+   lowbattery &
+
+So that it runs in the background.

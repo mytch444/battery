@@ -1,6 +1,6 @@
 BINDIR?= /usr/local/bin
 BATTERY=battery
-LOWBATTERY=lowbatteryd
+LOWBATTERY=lowbattery
 
 install:
 	install -Dm 755 $(BATTERY) $(BINDIR)/$(BATTERY)
