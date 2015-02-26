@@ -1,0 +1,17 @@
+#!/bin/sh
+# lowbatteryd: starts/stops lowbatteryd daemon
+
+case "$1" in
+	start) 
+		/usr/local/bin/lowbatteryd
+		;;
+	stop) 
+		/usr/local/bin/lowbatteryd --stop
+		;;
+	restart) 
+		$0 stop
+		$0 start
+		;;
+	*) echo "Usage: $0 {start|stop|reload|restart|status}" ; exit 1
+esac
+exit $?
