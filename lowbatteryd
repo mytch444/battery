@@ -1,17 +1,55 @@
-#!/bin/sh
-# lowbatteryd: starts/stops lowbatteryd daemon
+#!/bin/bash
 
-case "$1" in
-	start) 
-		/usr/local/bin/lowbatteryd
-		;;
-	stop) 
-		/usr/local/bin/lowbatteryd --stop
-		;;
-	restart) 
-		$0 stop
-		$0 start
-		;;
-	*) echo "Usage: $0 {start|stop|reload|restart|status}" ; exit 1
-esac
-exit $?
+. /etc/lowbatteryd
+
+function checkloop {
+	cat /dev/null > "$MESSAGEFILE"
+
+	while :
+	do
+		# No harm in reloading config.
+		. /etc/lowbatteryd
+
+		sleep $DELAY
+
+		MESSAGE=`cat $MESSAGEFILE`
+		[[ "$MESSAGE" == "STOP" ]] && break
+
+		if [[ "`battery -s`" == "Charging" ]]; then
+			cat /dev/null > "$MESSAGEFILE"
+			continue
+		fi
+
+		BAT=`battery -c`
+		if [ $BAT -lt $EXTREMELOW ] && [[ "$MESSAGE" != "EXTREMELOW" ]]; then
+			echo "EXTREMELOW" > $MESSAGEFILE
+			/bin/bash -c "$EXTREMELOWCOMMAND"
+		elif [ $BAT -lt $VERYLOW ] && [[ "$MESSAGE" != "VERYLOW" ]]; then
+			echo "VERYLOW" > $MESSAGEFILE
+			/bin/bash -c "$VERYLOWCOMMAND"
+		elif [ $BAT -lt $LOW ] && [[ "$MESSAGE" != "LOW" ]]; then
+			echo "LOW" > $MESSAGEFILE
+			/bin/bash -c "$LOWCOMMAND"
+		fi
+	done
+
+    rm "$MESSAGEFILE"
+}
+
+if [ "$1" == "-h" ]; then
+    echo "$0"
+	echo "	Starts the daemon (non-forking)."	
+    echo "$0 --stop"
+    echo "	Stops the daemon."
+    echo "$0 -h"
+    echo "	Prints this."
+	echo
+	echo "lowbatteryd is a simple bash script that checks the battery charge and executes commands at certain levels"
+	echo "The levels and commands can be changed in /etc/lowbatteryd"
+
+elif [ "$1" == "-s" ]; then
+    echo "STOP" > "$MESSAGEFILE"
+else
+
+    checkloop
+fi
