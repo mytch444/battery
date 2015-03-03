@@ -1,6 +1,8 @@
 #!/bin/bash
 
-. /etc/lowbatteryd
+CONF=/etc/lowbatteryd.conf
+
+. $CONF
 
 function checkloop {
 	cat /dev/null > "$MESSAGEFILE"
@@ -8,12 +10,11 @@ function checkloop {
 	while :
 	do
 		# No harm in reloading config.
-		. /etc/lowbatteryd
+		. $CONF
 
 		sleep $DELAY
 
 		MESSAGE=`cat $MESSAGEFILE`
-		[[ "$MESSAGE" == "STOP" ]] && break
 
 		if [[ "`battery -s`" == "Charging" ]]; then
 			cat /dev/null > "$MESSAGEFILE"
@@ -39,17 +40,12 @@ function checkloop {
 if [ "$1" == "-h" ]; then
     echo "$0"
 	echo "	Starts the daemon (non-forking)."	
-    echo "$0 --stop"
-    echo "	Stops the daemon."
     echo "$0 -h"
     echo "	Prints this."
 	echo
 	echo "lowbatteryd is a simple bash script that checks the battery charge and executes commands at certain levels"
 	echo "The levels and commands can be changed in /etc/lowbatteryd"
 
-elif [ "$1" == "-s" ]; then
-    echo "STOP" > "$MESSAGEFILE"
 else
-
     checkloop
 fi

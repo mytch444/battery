@@ -1,4 +1,4 @@
-BINDIR?= /usr/local/bin
+BINDIR?= /usr/bin
 BATTERY=battery
 LOWBAT=lowbatteryd
 LOWBATCONF=lowbatteryd.conf
