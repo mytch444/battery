@@ -11,7 +11,7 @@ install:
 	install -Dm 755 $(LOWBATCONF) $(CONFDIR)/$(LOWBATCONF)
 
 install-rc: 
-	install -Dm 755 lowbatteryd-init /etc/rc.d/lowbattery
+	install -Dm 755 lowbatteryd-init /etc/rc.d/lowbatteryd
 
 install-show:
 	install -Dm 755 $(SHOWBATTERY) $(DESTDIR)/$(SHOWBATTERY)

@@ -3,10 +3,10 @@
 
 case "$1" in
 	start) 
-		/usr/bin/lowbatteryd
+		/usr/bin/lowbatteryd &
 		;;
 	stop) 
-		/usr/bin/lowbatteryd --stop
+		killall lowbatteryd	
 		;;
 	restart) 
 		$0 stop
