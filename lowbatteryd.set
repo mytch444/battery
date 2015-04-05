@@ -1,11 +1,11 @@
 #!/bin/sh
 
-CONF=/usr/etc/lowbatteryd.conf
+CONF=/etc/lowbatteryd.conf
 
 . $CONF
 
 function checkloop {
-	cat /dev/null > "$MESSAGEFILE"
+	echo 0 > "$LEVELFILE"
 
 	while :
 	do
@@ -14,27 +14,33 @@ function checkloop {
 
 		sleep $DELAY
 
-		MESSAGE=`cat $MESSAGEFILE`
-
 		if [[ "`battery -s`" == "Charging" ]]; then
-			cat /dev/null > "$MESSAGEFILE"
+			echo 0 > "$LEVELFILE"
 			continue
 		fi
+		
+		L=`cat $LEVELFILE`
 
 		BAT=`battery -c`
-		if [ $BAT -lt $EXTREMELOW ] && [[ "$MESSAGE" != "EXTREMELOW" ]]; then
-			echo "EXTREMELOW" > $MESSAGEFILE
-			/bin/bash -c "$EXTREMELOWCOMMAND"
-		elif [ $BAT -lt $VERYLOW ] && [[ "$MESSAGE" != "VERYLOW" ]]; then
-			echo "VERYLOW" > $MESSAGEFILE
-			/bin/bash -c "$VERYLOWCOMMAND"
-		elif [ $BAT -lt $LOW ] && [[ "$MESSAGE" != "LOW" ]]; then
-			echo "LOW" > $MESSAGEFILE
-			/bin/bash -c "$LOWCOMMAND"
+		if [ $BAT -le $EXTREMELOW ] && [[ $L -lt 3 ]]; then
+			
+			echo 3 > $LEVELFILE
+			/bin/sh -c "$EXTREMELOWCOMMAND"
+
+		elif [ $BAT -le $VERYLOW ] && [[ $L -lt 2 ]]; then
+		
+			echo 2 > $LEVELFILE
+			/bin/sh -c "$VERYLOWCOMMAND"
+
+		elif [ $BAT -le $LOW ] && [[ $L -lt 1 ]]; then
+	
+			echo 1 > $LEVELFILE
+			/bin/sh -c "$LOWCOMMAND"
+
 		fi
 	done
 
-    rm "$MESSAGEFILE"
+    rm "$LEVELFILE"
 }
 
 if [ "$1" == "-h" ]; then
