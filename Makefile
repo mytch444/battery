@@ -1,23 +1,22 @@
-DESTDIR?= /usr/bin
-CONFDIR?= /etc
-BATTERY=battery
-LOWBAT=lowbatteryd
-LOWBATCONF=lowbatteryd.conf
-SHOWBATTERY=showbattery
+DESTDIR?=
+PREFIX?=/usr
+CONFDIR?=${PREFIX}/etc
+BINDIR?=${PREFIX}/bin
 
-install:
-	install -Dm 755 $(BATTERY) $(DESTDIR)/$(BATTERY)
-	install -Dm 755 $(LOWBAT) $(DESTDIR)/$(LOWBAT)
-	install -Dm 755 $(LOWBATCONF) $(CONFDIR)/$(LOWBATCONF)
+lowbatteryd.set: lowbatteryd
+	@echo "Building lowbatteryd.set"
+	@echo "#!/bin/sh" > lowbatteryd.set
+	@echo >> lowbatteryd.set
+	@echo "CONF=${CONFDIR}/lowbatteryd.conf" >> lowbatteryd.set
+	@echo >> lowbatteryd.set
+	@cat lowbatteryd >> lowbatteryd.set
 
-install-rc: 
-	install -Dm 755 lowbatteryd-init /etc/rc.d/lowbatteryd
-
-install-show:
-	install -Dm 755 $(SHOWBATTERY) $(DESTDIR)/$(SHOWBATTERY)
+install: battery lowbatteryd.set lowbatteryd.conf
+	install -Dm 755 battery ${DESTDIR}${BINDIR}/battery
+	install -Dm 755 lowbatteryd.set ${DESTDIR}${BINDIR}/lowbatteryd
+	install -Dm 755 lowbatteryd.conf ${DESTDIR}${CONFDIR}/lowbatteryd.conf
 
 uninstall:
-	rm $(DESTDIR)/$(BATTERY)
-	rm $(DESTDIR)/$(LOWBATTERY)
-	rm $(DESTDIR)/$(SHOWBATTERY)
-	rm $(CONFDIR)/$(LOWBATCONF)
+	rm ${DESTDIR}${BINDIR}/battery
+	rm ${DESTDIR}${BINDIR}/lowbatteryd
+	rm ${DESTDIR}${CONFDIR}/lowbatteryd.conf

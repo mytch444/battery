@@ -1,3 +1,0 @@
-#!/bin/bash
-
-showmessage -t 4 "`battery`"

@@ -1,7 +1,11 @@
 #!/bin/bash
 
 if [ "$1" == "-h" ]; then
+	echo
     echo "$0"
+	echo
+	echo "Prints status of batteries"
+	echo
     echo "   Will print out the percentage and status."
     echo "$0 -c"
     echo "   Will just print out the percentage with no fansy stuff. Thus it is clean."
@@ -12,14 +16,16 @@ if [ "$1" == "-h" ]; then
     exit 0
 fi
 
-cd `find /sys/devices/ -name BAT0` # hopefully there is only one
-PERCENT=$((100 * `cat energy_now` / `cat energy_full`))
-STATUS=`cat status`
+for b in `find /sys/devices/ -name "BAT*"`; do
+	cd "$b"
+	PERCENT=$((100 * `cat energy_now` / `cat energy_full`))
+	STATUS=`cat status`
 
-if [ "$1" == "-c" ]; then
-    echo "$PERCENT"
-elif [ "$1" == "-s" ];then
-    echo "$STATUS"
-else
-    echo "$PERCENT% [$STATUS]"
-fi
+	if [ "$1" == "-c" ]; then
+		echo "$PERCENT"
+	elif [ "$1" == "-s" ];then
+		echo "$STATUS"
+	else
+		echo "$PERCENT% [$STATUS]"
+	fi
+done
